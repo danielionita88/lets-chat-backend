@@ -1,16 +1,24 @@
-exports.getPosts = (req, res, next) => {
-  res.status(200).json({
-    posts: [{ title: "First Post", content: "This is the first post!" }],
-  });
+const Post = require("../models/Post");
+const User = require("../models/User");
+
+exports.getPosts = async (req, res) => {
+  try {
+    const posts = await Post.find()
+    res.status(200).json(posts)
+  }catch(e){
+    res.status(500).json(e)
+  }
 };
 
-exports.createPost = (req, res, next) => {
-  const title = req.body.title;
-  const content = req.body.content;
-  res
-    .status(201)
-    .json({
-      message: "post created succesfully",
-      post: { id: new Date().toISOString(), title: title, content: content },
-    });
+exports.createPost = async (req, res) => {
+  try {
+    const newPost = new Post(req.body);
+    const user = await User.findById(req.body.user_id);
+
+    const post = await newPost.save();
+    await user.updateOne({ $push: { posts: post._id } });
+    res.status(201).json(post);
+  } catch (e) {
+    res.status(500).json(e);
+  }
 };

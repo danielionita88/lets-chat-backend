@@ -1,6 +1,6 @@
-const asyncHandler = require("express-async-handler");
-const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const asyncHandler = require("express-async-handler");
+const User = require("../models/userModel");
 
 exports.updateUser = asyncHandler(async (req, res) => {
   if (req.body.user_id === req.params.id) {
@@ -24,3 +24,5 @@ exports.deleteUser = asyncHandler(async (req, res) => {
     req.status(403).json("You can delete only your account");
   }
 });
+
+

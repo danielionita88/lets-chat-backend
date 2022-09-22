@@ -3,11 +3,12 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const {errorHandler} = require('./middleware/errorMiddleware')
 
 const bodyParser = require("body-parser");
-const authRoutes = require("./routes/auth");
-const usersRoutes = require("./routes/users");
-const postsRoutes = require("./routes/posts");
+const authRoutes = require("./routes/authRoutes");
+const usersRoutes = require("./routes/userRoutes");
+const postsRoutes = require("./routes/postRoutes");
 
 dotenv.config()
 mongoose.connect(process.env.MONGO_URL)
@@ -26,5 +27,7 @@ app.use((req, res, next) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/posts", postsRoutes);
+
+app.use(errorHandler)
 
 app.listen(8080);

@@ -3,18 +3,19 @@ const dotenv = require("dotenv");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const connectDB = require("./config/db");
+
 const { errorHandler } = require("./middleware/errorMiddleware");
 
 const bodyParser = require("body-parser");
 const authRoutes = require("./routes/authRoutes");
 const usersRoutes = require("./routes/userRoutes");
 const postsRoutes = require("./routes/postRoutes");
+const s3Routes = require("./routes/s3Routes")
 
 dotenv.config();
 connectDB();
 
 const app = express();
-
 app.use(bodyParser.json());
 app.use(helmet());
 app.use(morgan("common"));
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/posts", postsRoutes);
+app.use("/api/s3Url",s3Routes)
 
 app.use(errorHandler);
 

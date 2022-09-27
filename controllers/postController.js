@@ -1,15 +1,15 @@
 const asyncHandler = require("express-async-handler");
 
 const Post = require("../models/postModel");
-const User = require("../models/userModel");
 
 exports.getPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find({ user_id: req.user.id });
-  res.status(200).json(posts);
+  const sortedPosts = posts.sort((a,b) => b.createdAt - a.createdAt )
+  res.status(200).json(sortedPosts);
 });
 
 exports.createPost = asyncHandler(async (req, res) => {
-  if (!req.body.description && !req.body.image) {
+  if (!req.body.description && !req.body.imageUrl) {
     res.status(400);
     throw new Error("Please add a description or a picture!");
   }
@@ -26,13 +26,13 @@ exports.updatePost = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Post not found!");
   }
-  const user = await User.findById(req.user.id);
-  if (!user) {
+
+  if (!req.user) {
     res.status(401);
     throw new Error("User not found!");
   }
 
-  if (post.user_id.toString() !== user.id) {
+  if (post.user_id.toString() !== req.user.id) {
     res.status(401);
     throw new Error("User not authorized!");
   }
@@ -48,13 +48,12 @@ exports.deletePost = asyncHandler(async (req, res) => {
     throw new Error("Post not found!");
   }
 
-  const user = await User.findById(req.user.id);
-  if (!user) {
+  if (!req.user) {
     res.status(401);
     throw new Error("User not found!");
   }
 
-  if (post.user_id.toString() !== user.id) {
+  if (post.user_id.toString() !== req.user.id) {
     res.status(401);
     throw new Error("User not authorized!");
   }

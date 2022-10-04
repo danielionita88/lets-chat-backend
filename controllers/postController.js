@@ -4,7 +4,7 @@ const Post = require("../models/postModel");
 
 exports.getPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find({ user_id: req.user.id });
-  const sortedPosts = posts.sort((a,b) => b.createdAt - a.createdAt )
+  const sortedPosts = posts.sort((a, b) => b.createdAt - a.createdAt);
   res.status(200).json(sortedPosts);
 });
 

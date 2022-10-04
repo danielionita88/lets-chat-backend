@@ -30,3 +30,4 @@ exports.getS3Url = asyncHandler(async (req, res) => {
 
   res.status(201).json(uploadURL);
 });
+

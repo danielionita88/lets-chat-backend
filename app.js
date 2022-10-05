@@ -9,7 +9,7 @@ const { errorHandler } = require("./middleware/errorMiddleware");
 const bodyParser = require("body-parser");
 const authRoutes = require("./routes/authRoutes");
 const postsRoutes = require("./routes/postRoutes");
-const s3Routes = require("./routes/s3Routes")
+const s3Routes = require("./routes/s3Routes");
 
 dotenv.config();
 connectDB();
@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postsRoutes);
-app.use("/api/s3Url",s3Routes)
+app.use("/api/s3Url", s3Routes);
 
 app.use(errorHandler);
 

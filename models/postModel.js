@@ -8,11 +8,12 @@ const PostSchema = new mongoose.Schema(
       ref: "User",
     },
     description: { type: String, default: "" },
-    imageUrl: { type: String, default: "" },
-    liked: { type: Array, default: [] },
+    image_url: { type: String, default: "" },
+    likes: { type: Array, default: [] },
     comments: { type: Array, default: [] },
   },
   { timestamps: true }
 );
+
 
 module.exports = mongoose.model("Post", PostSchema);

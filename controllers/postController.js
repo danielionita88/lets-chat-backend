@@ -24,7 +24,6 @@ exports.createPost = asyncHandler(async (req, res) => {
 
 exports.updatePost = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
-  Post.fin
   if (!post) {
     res.status(400);
     throw new Error("Post not found!");

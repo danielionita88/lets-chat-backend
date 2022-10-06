@@ -11,6 +11,6 @@ router.put("/:id", protect, postsController.updatePost);
 
 router.delete("/:id", protect, postsController.deletePost);
 
-router.put("/:id/like", protect, postsController.likePost)
+router.patch("/:id/like", postsController.likePost)
 
 module.exports = router;

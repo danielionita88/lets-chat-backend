@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 
 const Post = require("../models/postModel");
+const User = require('../models/userModel')
 
 exports.getPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find()
@@ -23,6 +24,7 @@ exports.createPost = asyncHandler(async (req, res) => {
 
 exports.updatePost = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
+  Post.fin
   if (!post) {
     res.status(400);
     throw new Error("Post not found!");
@@ -64,28 +66,25 @@ exports.deletePost = asyncHandler(async (req, res) => {
 
 exports.likePost = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
+  const user = await User.findById(req.body.user_id)
+
   if (!post) {
     res.status(400);
     throw new Error("Post not found!");
   }
 
-  if (!req.user) {
+  if (!user) {
     res.status(401);
     throw new Error("User not found!");
   }
 
-  if (post.user_id.toString() !== req.user.id) {
-    res.status(401);
-    throw new Error("User not authorized!");
-  }
-
-  if (!post.likes.includes(req.user.id)) {
-    await post.updateOne({ $push: { likes: req.user.id } });
-    await req.user.updateOne({ $push: { likes: req.params.id } });
-    res.status(200).json({post_id: post._id,user_id: req.user.id});
+  if (!post.likes.includes(user.id)) {
+    await post.updateOne({ $push: { likes: user.id } });
+    await user.updateOne({ $push: { likes: req.params.id } });
+    res.status(200).json({post_id: post._id,user_id: user.id});
   } else {
-    await post.updateOne({ $pull: { likes: req.user.id } });
-    await req.user.updateOne({ $pull: { likes: req.params.id } });
-    res.status(200).json({post_id: post._id,user_id: req.user.id});
+    await post.updateOne({ $pull: { likes: user.id } });
+    await user.updateOne({ $pull: { likes: req.params.id } });
+    res.status(200).json({post_id: post._id,user_id: user.id});
   }
 });

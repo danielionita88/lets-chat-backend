@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema(
   {
-    first_name: {
+    firstName: {
       type: String,
       require: true,
       max: 20,
       min: 2,
     },
-    last_name: {
+    lastName: {
       type: String,
       require: true,
       max: 20,
@@ -24,22 +24,22 @@ const UserSchema = new mongoose.Schema(
       require: true,
       min: 6,
     },
-    current_location_city: {
+    currentLocationCity: {
       type: String,
       min: 3,
       default: "",
     },
-    current_location_country: {
+    currentLocationCountry: {
       type: String,
       min: 3,
       default: "",
     },
-    from_city: {
+    fromCity: {
       type: String,
       min: 3,
       default: "",
     },
-    from_country: {
+    fromCountry: {
       type: String,
       min: 3,
       default: "",
@@ -49,7 +49,7 @@ const UserSchema = new mongoose.Schema(
       min: 3,
       default: "",
     },
-    profile_picture: {
+    profilePicture: {
       type: String,
       default: "",
     },

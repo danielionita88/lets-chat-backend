@@ -6,7 +6,7 @@ const User = require('../models/userModel')
 exports.getPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find()
     .sort({ createdAt: -1 })
-    .populate('user_id','_id first_name last_name profile_picture');
+    .populate('user','_id firstName lastName profilePicture');
   res.status(200).json(posts);
 });
 
@@ -16,9 +16,10 @@ exports.createPost = asyncHandler(async (req, res) => {
     throw new Error("Please add a description or a picture!");
   }
   const post = await Post.create({
-    user_id: req.user.id,
+    user: req.user.id,
     ...req.body,
-  });
+  })
+  await post.populate('user','_id firstName lastName profilePicture')
   res.status(201).json(post);
 });
 
@@ -55,7 +56,7 @@ exports.deletePost = asyncHandler(async (req, res) => {
     throw new Error("User not found!");
   }
 
-  if (post.user_id.toString() !== req.user.id) {
+  if (post.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("User not authorized!");
   }
@@ -65,7 +66,7 @@ exports.deletePost = asyncHandler(async (req, res) => {
 
 exports.likePost = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
-  const user = await User.findById(req.body.user_id)
+  const user = await User.findById(req.body.userId)
 
   if (!post) {
     res.status(400);
@@ -80,10 +81,10 @@ exports.likePost = asyncHandler(async (req, res) => {
   if (!post.likes.includes(user.id)) {
     await post.updateOne({ $push: { likes: user.id } });
     await user.updateOne({ $push: { likes: req.params.id } });
-    res.status(200).json({post_id: post._id,user_id: user.id});
+    res.status(200).json({postId: post._id,userId: user.id});
   } else {
     await post.updateOne({ $pull: { likes: user.id } });
     await user.updateOne({ $pull: { likes: req.params.id } });
-    res.status(200).json({post_id: post._id,user_id: user.id});
+    res.status(200).json({postId: post._id,userId: user.id});
   }
 });

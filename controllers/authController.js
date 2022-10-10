@@ -10,9 +10,9 @@ const generateToken = (id) => {
 };
 
 exports.registerUser = asyncHandler(async (req, res, next) => {
-  const { first_name, last_name, email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
 
-  if (!first_name || !last_name || !email || !password) {
+  if (!firstName || !lastName || !email || !password) {
     res.status(400);
     throw new Error("Please add all fields!");
   }
@@ -28,8 +28,8 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   const newUser = await User.create({
-    first_name,
-    last_name,
+    firstName,
+    lastName,
     email,
     password: hashedPassword,
   });

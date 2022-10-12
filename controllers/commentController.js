@@ -41,7 +41,7 @@ exports.updateComment = asyncHandler(async (req, res) => {
   await Comment.findByIdAndUpdate(req.body.commentId, {
     description: req.body.description,
   });
-  const updatedComment = await Comment.findById(req.body.commentId);
+  const updatedComment = await Comment.findById(req.body.commentId).populate("user", "_id firstName lastName profilePicture")
 
   res.status(201).json(updatedComment);
 });

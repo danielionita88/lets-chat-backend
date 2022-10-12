@@ -31,3 +31,14 @@ exports.getS3Url = asyncHandler(async (req, res) => {
   res.status(201).json(uploadURL);
 });
 
+exports.deletePicture = (imageName)=> {
+  const params = {
+    Bucket: bucketName,
+    Key: imageName
+  }
+
+  s3.deleteObject(params, (err,data) => {
+    if (err) console.log(err, err.stack)
+    else console.data
+  })
+}

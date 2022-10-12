@@ -2,6 +2,8 @@ const asyncHandler = require("express-async-handler");
 
 const Post = require("../models/postModel");
 const User = require('../models/userModel')
+const {deletePicture} = require('./s3Controller')
+
 
 exports.getPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find()
@@ -46,6 +48,7 @@ exports.updatePost = asyncHandler(async (req, res) => {
 
 exports.deletePost = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
+  
   if (!post) {
     res.status(400);
     throw new Error("Post not found!");
@@ -59,6 +62,10 @@ exports.deletePost = asyncHandler(async (req, res) => {
   if (post.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("User not authorized!");
+  }
+  if(post.imageUrl){
+    const imageName = post.imageUrl.slice(post.imageUrl.length - 32)
+    deletePicture(imageName)
   }
   await post.remove();
   res.status(200).json({ id: req.params.id });

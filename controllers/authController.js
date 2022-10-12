@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const {deletePicture} = require ('./s3Controller')
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -66,6 +67,10 @@ exports.updateUser = asyncHandler(async (req, res) => {
     if(Object.keys(req.body).length <= 1){
       res.status(400)
       throw new Error("You must add at least one value!")
+    }
+    if(req.body.profilePicture){
+      const pictureName = req.user.profilePicture.slice(req.user.profilePicture.length - 32)
+      deletePicture(pictureName)
     }
     await User.findByIdAndUpdate(req.user.id, {
       $set: req.body,

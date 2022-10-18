@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 
 const Post = require("../models/postModel");
 const User = require('../models/userModel')
+const Comment = require('../models/commentModel')
 const {deletePicture} = require('./s3Controller')
 
 
@@ -68,6 +69,7 @@ exports.deletePost = asyncHandler(async (req, res) => {
     deletePicture(imageName)
   }
   await post.remove();
+  await Comment.deleteMany({post: req.params.id})
   res.status(200).json({ id: req.params.id });
 });
 

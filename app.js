@@ -1,12 +1,18 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const helmet = require("helmet");
-const morgan = require("morgan");
+
+// logger middleware
+const morgan = require("morgan"); 
+
 const connectDB = require("./config/db");
+
+// responsible for parsing the incoming request bodies in a middleware before you handle it.
+const bodyParser = require("body-parser");
 
 const { errorHandler } = require("./middleware/errorMiddleware");
 
-const bodyParser = require("body-parser");
+
 const authRoutes = require("./routes/authRoutes");
 const postsRoutes = require("./routes/postRoutes");
 const s3Routes = require("./routes/s3Routes");

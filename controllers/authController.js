@@ -1,8 +1,9 @@
+// middleware for handling exceptions inside of async
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const {deletePicture} = require ('./s3Controller')
+const { deletePicture } = require("./s3Controller");
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -46,6 +47,10 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
 });
 
 exports.loginUser = asyncHandler(async (req, res, next) => {
+  if (!req.body.email && !req.body.password) {
+    res.status(400);
+    throw new Error("Enter a password and email");
+  }
   const user = await User.findOne({ email: req.body.email });
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!user) {
@@ -64,18 +69,20 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
 
 exports.updateUser = asyncHandler(async (req, res) => {
   if (req.user.id === req.params.id) {
-    if(Object.keys(req.body).length <= 1){
-      res.status(400)
-      throw new Error("You must add at least one value!")
+    if (Object.keys(req.body).length <= 1) {
+      res.status(400);
+      throw new Error("You must add at least one value!");
     }
-    if(req.body.profilePicture){
-      const pictureName = req.user.profilePicture.slice(req.user.profilePicture.length - 32)
-      deletePicture(pictureName)
+    if (req.body.profilePicture) {
+      const pictureName = req.user.profilePicture.slice(
+        req.user.profilePicture.length - 32
+      );
+      deletePicture(pictureName);
     }
     await User.findByIdAndUpdate(req.user.id, {
       $set: req.body,
     });
-    const updatedUser = await User.findById(req.user.id)
+    const updatedUser = await User.findById(req.user.id);
     const { password, ...others } = updatedUser._doc;
     res.status(200).json({ token: generateToken(req.user.id), ...others });
   } else {

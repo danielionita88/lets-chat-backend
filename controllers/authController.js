@@ -47,16 +47,16 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
 });
 
 exports.loginUser = asyncHandler(async (req, res, next) => {
-  if (!req.body.email && !req.body.password) {
+  if (!req.body.email || !req.body.password) {
     res.status(400);
     throw new Error("Enter a password and email");
   }
   const user = await User.findOne({ email: req.body.email });
-  const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!user) {
     res.status(404);
     throw new Error("User not found!");
   }
+  const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword) {
     res.status(400);
     throw new Error("Wrong Password!");

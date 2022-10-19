@@ -12,7 +12,6 @@ const bodyParser = require("body-parser");
 
 const { errorHandler } = require("./middleware/errorMiddleware");
 
-
 const authRoutes = require("./routes/authRoutes");
 const postsRoutes = require("./routes/postRoutes");
 const s3Routes = require("./routes/s3Routes");

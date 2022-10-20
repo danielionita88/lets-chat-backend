@@ -16,6 +16,7 @@ const authRoutes = require("./routes/authRoutes");
 const postsRoutes = require("./routes/postRoutes");
 const s3Routes = require("./routes/s3Routes");
 const commentsRoutes = require("./routes/commentsRoutes");
+const friendRequestRoutes = require('./routes/friendRequestRoutes')
 
 dotenv.config();
 connectDB();
@@ -34,7 +35,8 @@ app.use((req, res, next) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postsRoutes);
 app.use("/api/s3Url", s3Routes);
-app.use("/api/comments/", commentsRoutes);
+app.use("/api/comments", commentsRoutes);
+app.use("/api/friendRequests", friendRequestRoutes);
 
 app.use(errorHandler);
 

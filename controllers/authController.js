@@ -47,7 +47,6 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
 });
 
 exports.loginUser = asyncHandler(async (req, res, next) => {
-  
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
     res.status(404);
@@ -94,4 +93,17 @@ exports.deleteUser = asyncHandler(async (req, res) => {
   } else {
     res.status(403).json("You can delete only your account");
   }
+});
+
+exports.getUsers = asyncHandler(async (req, res) => {console.log(req.query)
+  const { search, limit } = req.query;
+
+  const users = await User.find({
+    $or: [
+      { firstName: { $regex: search, $options: "$i" } },
+      { lastName: { $regex: search, $options: "$i" } },
+    ],
+  }).limit(limit)
+
+  res.status(200).json(users);
 });
